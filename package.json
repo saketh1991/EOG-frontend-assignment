@@ -1,5 +1,5 @@
 {
-  "name": "react-visualization-base",
+  "name": "eog-react-visualization-base",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
