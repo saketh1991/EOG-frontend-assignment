@@ -4,7 +4,7 @@ const findLocationByLatLong = async (latitude, longitude) => {
   const latlon = [latitude, longitude].join(",");
   // Using the create-react-app's proxy for CORS issues
   const response = await fetch(
-    `http://react-assessment-api.svc.eogresources.com/api/weather/location/search/?lattlong=${latlon}`
+    `https://react-assessment-api.herokuapp.com/api/weather/location/search/?lattlong=${latlon}`
   );
   if (!response.ok) {
     return { error: { code: response.status } };
