@@ -2,17 +2,17 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Weather from "./Weather";
 
-const styles = {
+const useStyles = makeStyles({
   grow: {
     flexGrow: 1
   }
-};
+});
 
-const Header = props => {
-  const { classes } = props;
+export default () => {
+  const classes = useStyles();
 
   const name = "$USERNAME's";
   return (
@@ -26,5 +26,3 @@ const Header = props => {
     </AppBar>
   );
 };
-
-export default withStyles(styles)(Header);

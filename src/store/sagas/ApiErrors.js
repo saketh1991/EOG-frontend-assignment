@@ -3,7 +3,7 @@ import * as actions from "../actions";
 import { toast } from "react-toastify";
 
 function* apiErrorReceived(action) {
-  yield call(toast.error, `Error Received: ${action.code}`);
+  yield call(toast.error, `Error Received: ${action.error}`);
 }
 
 function* watchApiError() {

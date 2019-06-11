@@ -1,16 +1,14 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
     background: theme.palette.background.main,
     height: "100vh"
   }
-});
+}));
 
-const Wrapper = props => {
-  const { classes } = props;
-  return <div className={classes.wrapper}>{props.children}</div>;
+export default ({ children }) => {
+  const classes = useStyles();
+  return <div className={classes.wrapper}>{children}</div>;
 };
-
-export default withStyles(styles)(Wrapper);

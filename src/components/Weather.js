@@ -1,65 +1,79 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../store/actions";
+import { Provider, createClient, useQuery } from "urql";
+import { useGeolocation } from "react-use";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import ChipRaw from "@material-ui/core/Chip";
-import { withStyles } from "@material-ui/core/styles";
+import Chip from "./Chip";
 
-const cardStyles = theme => ({
-  root: {
-    background: theme.palette.secondary.main
-  },
-  label: {
-    color: theme.palette.primary.main
-  }
+const client = createClient({
+  url: "https://react.eogresources.com/graphql"
 });
-const Chip = withStyles(cardStyles)(ChipRaw);
 
-class Weather extends Component {
-  componentDidMount() {
-    this.props.onLoad();
-  }
-  render() {
-    const {
-      loading,
-      name,
-      weather_state_name,
-      temperatureinFahrenheit
-    } = this.props;
-    if (loading) return <LinearProgress />;
-    return (
-      <Chip
-        label={`Weather in ${name}: ${weather_state_name} and ${temperatureinFahrenheit}°`}
-      />
-    );
+const query = `
+query($latLong: WeatherQuery!) {
+  getWeatherForLocation(latLong: $latLong) {
+    description
+    locationName
+    temperatureinCelsius
   }
 }
+`;
 
-const mapState = (state, ownProps) => {
-  const {
-    loading,
-    name,
-    weather_state_name,
-    temperatureinFahrenheit
-  } = state.weather;
+const getWeather = state => {
+  const { temperatureinFahrenheit, description, locationName } = state.weather;
   return {
-    loading,
-    name,
-    weather_state_name,
-    temperatureinFahrenheit
+    temperatureinFahrenheit,
+    description,
+    locationName
   };
 };
 
-const mapDispatch = dispatch => ({
-  onLoad: () =>
-    dispatch({
-      type: actions.FETCH_WEATHER,
-      longitude: -95.3698,
-      latitude: 29.7604
-    })
-});
+export default () => {
+  return (
+    <Provider value={client}>
+      <Weather />
+    </Provider>
+  );
+};
 
-export default connect(
-  mapState,
-  mapDispatch
-)(Weather);
+const Weather = () => {
+  const getLocation = useGeolocation();
+  // Default to houston
+  const latLong = {
+    latitude: getLocation.latitude || 29.7604,
+    longitude: getLocation.longitude || -95.3698
+  };
+  const dispatch = useDispatch();
+  const { temperatureinFahrenheit, description, locationName } = useSelector(
+    getWeather
+  );
+
+  const [result] = useQuery({
+    query,
+    variables: {
+      latLong
+    }
+  });
+  const { fetching, data, error } = result;
+  useEffect(
+    () => {
+      if (error) {
+        dispatch({ type: actions.API_ERROR, error: error.message });
+        return;
+      }
+      if (!data) return;
+      const { getWeatherForLocation } = data;
+      dispatch({ type: actions.WEATHER_DATA_RECEIVED, getWeatherForLocation });
+    },
+    [dispatch, data, error]
+  );
+
+  if (fetching) return <LinearProgress />;
+
+  return (
+    <Chip
+      label={`Weather in ${locationName}: ${description} and ${temperatureinFahrenheit}°`}
+    />
+  );
+};

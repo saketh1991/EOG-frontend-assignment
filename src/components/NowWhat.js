@@ -1,41 +1,22 @@
 import React from "react";
 import Card from "@material-ui/core/Card";
-import CardHeaderRaw from "@material-ui/core/CardHeader";
+import CardHeader from "./CardHeader";
+import Typography from "@material-ui/core/Typography";
 import CardContent from "@material-ui/core/CardContent";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { withStyles } from "@material-ui/core/styles";
-import AvatarRaw from "@material-ui/core/Avatar";
+import { makeStyles } from "@material-ui/core/styles";
+import Avatar from "./Avatar";
 
-const cardStyles = theme => ({
-  root: {
-    background: theme.palette.primary.main
-  },
-  title: {
-    color: "white"
-  }
-});
-const CardHeader = withStyles(cardStyles)(CardHeaderRaw);
-
-const avatarStyles = theme => ({
-  root: {
-    background: theme.palette.primary.main
-  },
-  title: {
-    color: "white"
-  }
-});
-const Avatar = withStyles(avatarStyles)(AvatarRaw);
-
-const styles = {
+const useStyles = makeStyles({
   card: {
     margin: "5% 25%"
   }
-};
+});
 
-const NowWhat = props => {
-  const { classes } = props;
+export default () => {
+  const classes = useStyles();
   return (
     <Card className={classes.card}>
       <CardHeader title="OK, $USERNAME, you're all setup. Now What?" />
@@ -43,24 +24,34 @@ const NowWhat = props => {
         <List>
           <ListItem>
             <Avatar>1</Avatar>
-            <ListItemText primary="Connect to the Drone API" />
+            <ListItemText primary="Explore the GraphQL API" />
           </ListItem>
           <ListItem>
             <Avatar>2</Avatar>
-            <ListItemText primary="Create your Visualization" />
+            <ListItemText primary="Add ability to select Metrics" />
           </ListItem>
           <ListItem>
             <Avatar>3</Avatar>
-            <ListItemText primary="Poll the API" />
+            <ListItemText primary="Display the current metric data" />
           </ListItem>
           <ListItem>
             <Avatar>4</Avatar>
+            <ListItemText primary="Chart historical metric data" />
+          </ListItem>
+          <ListItem>
+            <Avatar>5</Avatar>
             <ListItemText primary="Submit Your App" />
           </ListItem>
         </List>
+
+        <Typography variant="body1">
+          Remember to refer to our{" "}
+          <a href="https://react.eogresources.com/assessing">
+            How We Assess Submissions
+          </a>{" "}
+          guidelines.
+        </Typography>
       </CardContent>
     </Card>
   );
 };
-
-export default withStyles(styles)(NowWhat);
