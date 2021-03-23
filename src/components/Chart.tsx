@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Provider } from 'urql';
 import { Measurement } from '../Features/MetricSelector/reducer';
 import { IState } from '../store';
@@ -38,8 +38,12 @@ function Chart() {
     <ResponsiveContainer width="100%" height="70%">
       <LineChart >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="at" type="category" allowDuplicatedCategory={false} label="Time" style={{margin: '10px'}} />
-        <YAxis dataKey="value" label="PSI" />
+        <XAxis dataKey="date" type="category" allowDuplicatedCategory={false} style={{ margin: '10px' }} format="date">
+          <Label value="Time" offset={0} position="insideBottom" />
+        </XAxis>
+        <YAxis dataKey="value">
+          <Label value="PSI" offset={0} position="insideLeft" />
+        </YAxis>
         <Tooltip />
         <Legend layout="vertical" verticalAlign="middle" align="right" />
         {Object.keys(selectedMetricsMeasurements).map(instrument => {
