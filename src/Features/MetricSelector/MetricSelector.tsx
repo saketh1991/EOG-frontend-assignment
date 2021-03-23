@@ -110,7 +110,7 @@ function MetricSelectorImpl(props: { client: any }) {
         <FormControl className={classes.container} component="fieldset">
             <FormGroup aria-label="position" row>
                 {metrics.map((metric, index) => {
-                    const lastMeasurement: Measure = measurementsData[metric.value]?.slice(-1)[0];
+                    const lastMeasurement: Measure = measurementsData[metric.value].slice(-1)[0];
                     return (<div key={index}>
                         <Checkbox key={metric.value} metric={metric} handleChange={handleChange} />
                         {lastMeasurement && <div className={classes.card} key={`${metric.value}-card`}>{lastMeasurement.value}</div>}
