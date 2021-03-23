@@ -12,7 +12,7 @@ interface Color {
 }
 
 function Chart() {
-  const selectedMetricsMeasurements: Measurement[] = useSelector((state: IState) => state.metrics.measurements);
+  const selectedMetricsMeasurements: { [key: string]: Measurement[] } = useSelector((state: IState) => state.metrics.measurements);
   return (
     <LineChart width={1000} height={600}>
       <CartesianGrid strokeDasharray="3 3" />
@@ -20,15 +20,15 @@ function Chart() {
       <YAxis dataKey="value" />
       <Tooltip />
       <Legend layout="vertical" verticalAlign="middle" align="right" />
-      {selectedMetricsMeasurements.map(instrument => {
+      {Object.keys(selectedMetricsMeasurements).map(instrument => {
         return (
           <Line
             dataKey="value"
-            data={instrument.measurements}
-            name={instrument.metric}
-            key={instrument.metric}
+            data={selectedMetricsMeasurements[instrument]}
+            name={instrument}
+            key={instrument}
             dot={false}
-            stroke={(colors as Color)[instrument.metric]} 
+            stroke={(colors as Color)[instrument]} 
           />
         );
       })}

@@ -9,13 +9,13 @@ import { IState } from '../../store';
 import { client } from '../../utils/client';
 import { actions, Metric } from './reducer';
 
-const query1 = `
+const getMetricsQuery = `
 query {
   getMetrics
 }
 `;
 
-const query = gql`
+const getMeasurementsQuery = gql`
 query($input: [MeasurementQuery]) {
   getMultipleMeasurements(input: $input) {
     metric
@@ -36,9 +36,16 @@ function MetricSelectorImpl(props: { client: any }) {
     const dispatch = useDispatch();
 
     const metrics = useSelector((state: IState) => state.metrics.instruments);
-    const selectedMetrics = useSelector((state: IState) => state.metrics.instruments.filter(m => m.isChecked));
+    const selectedMetrics: Metric[] = useSelector((state: IState) => state.metrics.instruments.filter(m => m.isChecked));
 
-    const [result] = useQuery({ query: query1 });
+    let selectedMetricObject: { [key: string]: boolean; } = {};
+
+    selectedMetrics.forEach((metric: Metric) => {
+        const { value } = metric;
+        selectedMetricObject[value] = true;
+    });
+
+    const [result] = useQuery({ query: getMetricsQuery });
     const { data, error } = result;
 
     useEffect(() => {
@@ -53,7 +60,7 @@ function MetricSelectorImpl(props: { client: any }) {
 
 
     const [loadMeasurements, { data: measurements }] = useLazyQuery(
-        query
+        getMeasurementsQuery
     );
 
     useEffect(() => {
@@ -67,8 +74,8 @@ function MetricSelectorImpl(props: { client: any }) {
         const after = calcThirtyMinutesAgo();
 
         let input = selectedMetrics.map(m => ({ metricName: m.value, after }))
-        if(metric.isChecked) { // is now uncheked then remove current item
-            const index =  selectedMetrics.findIndex(m => m.value === metric.value);
+        if (metric.isChecked) { // is now uncheked then remove current item
+            const index = selectedMetrics.findIndex(m => m.value === metric.value);
             input.splice(index, 1);
         } else { // is now checked so add new item in variables
             input.push({ metricName: metric.value, after })

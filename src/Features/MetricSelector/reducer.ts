@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
+import _ from 'lodash';
+import produce from 'immer';
 
 export type Metric = {
   label: string;
@@ -8,12 +10,13 @@ export type Metric = {
 
 export type Measurement = {
   metric: string;
-  measurements: {
+  measurements: Measure[];
+};
+
+export type Measure = {
     at: number;
-    metric: string;
     unit: string;
-    value: 822.97;
-  };
+    value: number;
 };
 
 export type ApiErrorAction = {
@@ -22,7 +25,7 @@ export type ApiErrorAction = {
 
 const initialState = {
   instruments: [] as Metric[],
-  measurements: [] as Measurement[],
+  measurements: {} as { [key: string]: Measurement[] },
 };
 
 const slice = createSlice({
@@ -48,8 +51,21 @@ const slice = createSlice({
       return state;
     },
     metricMeasurementsRecieved: (state, action: PayloadAction<Measurement[]>) => {
-      state.measurements = action.payload;
+      state.measurements = action.payload.reduce((acc: { [key: string]: any }, m) => {
+        acc[m.metric] = m.measurements;
+        return acc;
+      }, {});
+
       return state;
+    },
+    metricNewMeasurementsRecieved: (state, action: PayloadAction<Measurement>) => {
+      return produce(state, draftState => {
+        draftState = state;
+        const groupedData = _.groupBy(action.payload, 'metric');
+        Object.keys(draftState.measurements).forEach(key => {
+          draftState.measurements[key]= [...draftState.measurements[key], ...groupedData[key]] as Measurement[];
+        });
+      });
     },
   },
 });

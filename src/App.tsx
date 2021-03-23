@@ -10,6 +10,7 @@ import Chart from './components/Chart';
 import MetricSelector from './Features/MetricSelector/MetricSelector';
 import createStore from './store';
 import client from './utils/client';
+import Subscrier from './utils/subscrier';
 
 const store = createStore();
 const theme = createMuiTheme({
@@ -35,6 +36,7 @@ const App = () => (
           <Header />
           <MetricSelector />
           <Chart />
+          <Subscrier />
         </Wrapper>
       </ApolloProvider>
     </Provider>
