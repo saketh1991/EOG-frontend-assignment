@@ -20,7 +20,7 @@ function SubscriberImpl() {
 
   useEffect(() => {
     if (subscriptionResponse.data) {
-      if(count < 15) {
+      if(count < 10) {
         count++;
         bufferedItems.push(subscriptionResponse.data.newMeasurement);
       } else {

@@ -63,7 +63,10 @@ const slice = createSlice({
         draftState = state;
         const groupedData = _.groupBy(action.payload, 'metric');
         Object.keys(draftState.measurements).forEach(key => {
-          draftState.measurements[key]= [...draftState.measurements[key], ...groupedData[key]] as Measurement[];
+          const newDataset = groupedData[key];
+          if(!newDataset) return;
+          draftState.measurements[key].splice(0, newDataset.length);
+          draftState.measurements[key]= [...draftState.measurements[key], ...newDataset] as Measurement[];
         });
       });
     },
