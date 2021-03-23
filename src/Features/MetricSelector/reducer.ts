@@ -25,7 +25,7 @@ export type ApiErrorAction = {
 
 const initialState = {
   instruments: [] as Metric[],
-  measurements: {} as { [key: string]: Measurement[] },
+  measurements: {} as { [key: string]: Measure[] },
 };
 
 const slice = createSlice({
@@ -55,7 +55,7 @@ const slice = createSlice({
         acc[m.metric] = m.measurements;
         return acc;
       }, {});
-
+      
       return state;
     },
     metricNewMeasurementsRecieved: (state, action: PayloadAction<Measurement>) => {
@@ -66,7 +66,7 @@ const slice = createSlice({
           const newDataset = groupedData[key];
           if(!newDataset) return;
           draftState.measurements[key].splice(0, newDataset.length);
-          draftState.measurements[key]= [...draftState.measurements[key], ...newDataset] as Measurement[];
+          draftState.measurements[key]= [...draftState.measurements[key], ...newDataset] as Measure[];
         });
       });
     },

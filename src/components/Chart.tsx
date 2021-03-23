@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Provider } from 'urql';
-import { Measurement } from '../Features/MetricSelector/reducer';
+import { Measure } from '../Features/MetricSelector/reducer';
 import { IState } from '../store';
 import { client } from '../utils/client';
 import { colors } from '../utils/constants';
@@ -28,7 +28,7 @@ function Chart() {
 
   const classes = useStyles();
 
-  const selectedMetricsMeasurements: { [key: string]: Measurement[] } = useSelector((state: IState) => state.metrics.measurements);
+  const selectedMetricsMeasurements: { [key: string]: Measure[] } = useSelector((state: IState) => state.metrics.measurements);
   if (!Object.keys(selectedMetricsMeasurements).length) {
     return <div className={classes.message}>
       Please Select An Instrument.
@@ -38,7 +38,7 @@ function Chart() {
     <ResponsiveContainer width="100%" height="70%">
       <LineChart >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" type="category" allowDuplicatedCategory={false} style={{ margin: '10px' }} format="date">
+        <XAxis dataKey="at" type="category" allowDuplicatedCategory={false} style={{ margin: '10px' }}>
           <Label value="Time" offset={0} position="insideBottom" />
         </XAxis>
         <YAxis dataKey="value">

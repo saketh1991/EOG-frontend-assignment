@@ -8,23 +8,23 @@ import { gql, Provider, useQuery } from 'urql';
 import Checkbox from '../../components/Checkbox';
 import { IState } from '../../store';
 import { client } from '../../utils/client';
-import { actions, Measurement, Metric } from './reducer';
+import { actions, Measure, Metric } from './reducer';
 
 const useStyles = makeStyles({
-  container: {
-    paddingTop: "20px",
-    alignItems: 'center',
-    display: "flex"
-  },
-  card: {
-    background: 'white',
-    padding: '10px',
-    borderRadius: '4px',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    margin: '10px',
-    height: 40
-  }
+    container: {
+        paddingTop: "20px",
+        alignItems: 'center',
+        display: "flex"
+    },
+    card: {
+        background: 'white',
+        padding: '10px',
+        borderRadius: '4px',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        margin: '10px',
+        height: 40
+    }
 });
 
 
@@ -56,7 +56,7 @@ function MetricSelectorImpl(props: { client: any }) {
 
     const metrics = useSelector((state: IState) => state.metrics.instruments);
     const selectedMetrics: Metric[] = useSelector((state: IState) => state.metrics.instruments.filter(m => m.isChecked));
-    const measurementsData: { [key: string]: Measurement[] } = useSelector((state: IState) => state.metrics.measurements);
+    const measurementsData: { [key: string]: Measure[] } = useSelector((state: IState) => state.metrics.measurements);
 
     let selectedMetricObject: { [key: string]: boolean; } = {};
 
@@ -109,11 +109,13 @@ function MetricSelectorImpl(props: { client: any }) {
     return (
         <FormControl className={classes.container} component="fieldset">
             <FormGroup aria-label="position" row>
-                {metrics.map((metric, index) => <div key={index}> 
-                    <Checkbox key={metric.value} metric={metric} handleChange={handleChange} />
-                    {measurementsData[metric.value]?.slice(-1)[0] && <div className={classes.card} key={`${metric.value}-card`}>{(measurementsData[metric.value]?.slice(-1)[0] as any)?.value}</div>}
-                </div>
-                )}
+                {metrics.map((metric, index) => {
+                    const lastMeasurement: Measure = measurementsData[metric.value]?.slice(-1)[0];
+                    return (<div key={index}>
+                        <Checkbox key={metric.value} metric={metric} handleChange={handleChange} />
+                        {lastMeasurement && <div className={classes.card} key={`${metric.value}-card`}>{lastMeasurement.value}</div>}
+                    </div>)
+                })}
             </FormGroup>
         </FormControl>
     );
