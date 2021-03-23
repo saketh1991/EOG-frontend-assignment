@@ -55,7 +55,7 @@ const slice = createSlice({
         acc[m.metric] = m.measurements;
         return acc;
       }, {});
-      
+
       return state;
     },
     metricNewMeasurementsRecieved: (state, action: PayloadAction<Measurement>) => {
@@ -65,7 +65,6 @@ const slice = createSlice({
         Object.keys(draftState.measurements).forEach(key => {
           const newDataset = groupedData[key];
           if(!newDataset) return;
-          draftState.measurements[key].splice(0, newDataset.length);
           draftState.measurements[key]= [...draftState.measurements[key], ...newDataset] as Measure[];
         });
       });
